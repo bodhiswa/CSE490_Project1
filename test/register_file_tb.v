@@ -16,27 +16,33 @@ module test_register_file;
   
   initial
     begin
-        write_data = 0;
-        rs = 0;
-        rd = 0;
-        regSelect = 0;
-        immSelect = 0;
-        CLK = 0;
-        imm = 0;      
+        write_data = 0; rd = 0; rs = 0; regSelect = 0; immSelect = 0; CLK = 0; imm = 3'b000;      
     end
   
   always
     begin
-        #20 
+      // read s0 and s1
+      #20 write_data = 8'b00000000; rd = 0; rs = 1; regSelect = 0; immSelect = 0; CLK = 0; imm = 3'b000;
+      // write 'write_data' to s0
+      #20 write_data = 8'b00000111; rd = 0; rs = 1; regSelect = 1; immSelect = 0; CLK = 1; imm = 3'b000;
+      // read s0 and s1 again to make sure 'write_data' was written
+      #20 write_data = 8'b00000000; rd = 0; rs = 1; regSelect = 0; immSelect = 0; CLK = 0; imm = 3'b000;
+      // write 'write_data' to s1
+      #20 write_data = 8'b00000011; rd = 1; rs = 1; regSelect = 1; immSelect = 0; CLK = 1; imm = 3'b000;
+      // read s0 and s1 again to make sure 'write_data' was written
+      #20 write_data = 8'b00000000; rd = 0; rs = 1; regSelect = 0; immSelect = 0; CLK = 0; imm = 3'b000;
+      // make sure that immediate data is properly stored in rd_data
+      #20 write_data = 8'b00000000; rd = 0; rs = 1; regSelect = 0; immSelect = 1; CLK = 0; imm = 3'b100;
+      
     end
  
    	initial
     	begin
    
-          $display("Time\t out\t in\t"); 			
+          $display("Time\t write_data\t rd\t rs\t rd_data\t rs_data\t CLK"); 			
           $display("----------------------------------------------------");
-          $monitor("%4h %8b %1b", 
-               		$time, out, in);
+          $monitor("%4h %8b %1b %1b %8b %8b %1b", 
+               		$time, write_data, rd, rs, rd_data, rs_data, CLK);
     
     	end	
   
