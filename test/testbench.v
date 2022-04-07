@@ -1,40 +1,44 @@
 `timescale 1ns / 1ps
 module test_main;
+  reg CLK;
+    
+  wire [2:0] opcode;
+  wire rs;
+  wire rd;
+
   
-  wire rs_tb;
-  wire rd_tb;
-  wire [7:0] rsd_tb;
-  wire [7:0] rdd_tb; 
-  wire [7:0] aluout_tb; 
-  wire [7:0] PC_tb;
-  reg CLK_tb;
+  // control_unit
+  wire aluSelect;
+  wire regSelect;
+  wire immSelect;
+  wire dataSelect;
+  wire jumpSelect;
+  wire mux_select;
   
-  main dut(.rs(rs_tb), .rd(rd_tb), .rs_data(rsd_tb), .rd_data(rdd_tb), .alu_out(aluout_tb), .CLK(CLK_tb), .PC(PC_tb));
+  main dut(.rs(rs), .rd(rd), .aluSelect(aluSelect), .regSelect(regSelect), .immSelect(immSelect), .dataSelect(dataSelect), .mux_select(mux_select), .jumpSelect(jumpSelect), .opcode(opcode), .CLK(CLK));
   
   initial
     begin
-      CLK_tb = 0;
+      CLK = 0;
     end
   
   always
     begin
-      #20 CLK_tb = 0;
-      #20 CLK_tb = 1;
+      #20 CLK = 1;
+      #20 CLK = 0;
     end
  
    	initial
     	begin
    
-          $display("Time\t rs\t rd\t rs_data\t rd_data\t aluout\t CLK\t PC"); 			
+          $display("Time\t rs\t rd\t aluSelect\t regSelect\t immSelect\t dataSelect\t mux_select\t jumpSelect\t opcode\t CLK"); 			
           $display("----------------------------------------------------");
-          $monitor("%4h %8b %8b %1h %1h %2h %1h %1h", 
-               		$time, rs_tb, rd_tb, rsd_tb, rdd_tb, aluout_tb, CLK_tb, PC_tb);
+          $monitor("%4h %1b %1b %1b %1b %1b %1b %1b %1b %3b %1b", 
+               		$time,rs, rd, aluSelect, regSelect, immSelect, dataSelect, mux_select, jumpSelect, opcode, CLK);
     
     	end	
   
   initial #300 $finish;
 
 endmodule
-
-
 
